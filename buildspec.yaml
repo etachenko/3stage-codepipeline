@@ -1,0 +1,39 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.10 # this will install python 3.10 version in the temporalry environment
+    commands:
+      - echo installing cfn-lint
+      - pip3 install cfn-lint
+   # step   
+  pre_build:
+    commands:
+      - echo ==== WE ARE ENTERED THE PRE-BUILT STAGE ====
+      - echo CHECKING THE PYTHON VERSION INSTALLED
+      - python --version # will check what version of python has been installed
+      - echo CHECKING IF CFN-LINT WAS INSTALLED
+      - cfn-lint --version
+   # step
+  build:
+    commands:
+      - echo ==== Build started on 'date'
+      - echo CHECK IF THE TEMPLATE IS PRESENT
+      - ls -l
+      - echo VALIDATING THE CLOUDFORMATION TEMPLATE
+      - cfn-lint ec2WithCustomVPC.yaml
+      - echo BUILD THE CLOUDFORMATION TEMPLATE
+      - aws cloudformation package --template-file ec2WithCustomVPC.yaml --s3-bucket mydeployed-artifact-bucket --output-template-file build-artifact-template.yaml
+   # step
+  post_build:
+    commands:
+      - echo ==== Build completed at 'date'
+   # step
+artifacts:
+  files:
+    - build-artifact-template.yaml
+    
+  
+      
+      
